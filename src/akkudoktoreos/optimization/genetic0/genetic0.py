@@ -708,7 +708,7 @@ class Genetic0Optimization(OptimizationBase):
             individual
         )
 
-        if self.opti_param.get("home_appliance", 0) > 0 and washingstart_int:
+        if self.opti_param.get("home_appliance", 0) > 0 and washingstart_int is not None:
             # Set start hour for appliance
             self.simulation.home_appliance_start_hour = washingstart_int
 
