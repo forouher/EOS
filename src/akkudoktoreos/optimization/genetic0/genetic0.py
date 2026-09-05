@@ -670,8 +670,16 @@ class Genetic0Optimization(OptimizationBase):
                 len_ev - 1,
             )
 
-        # Household appliance start time
-        self.toolbox.register("attr_int", random.randint, start_hour, 23)
+        max_appliance_start_hour = self.config.prediction.hours - 1
+        if self.simulation.home_appliance:
+            max_appliance_start_hour = max(
+                start_hour,
+                min(
+                    max_appliance_start_hour,
+                    self.config.prediction.hours - self.simulation.home_appliance.duration_h,
+                ),
+            )
+        self.toolbox.register("attr_int", random.randint, start_hour, max_appliance_start_hour)
 
         self.toolbox.register("individual", self.create_individual)
         self.toolbox.register("population", tools.initRepeat, list, self.toolbox.individual)
@@ -691,8 +699,13 @@ class Genetic0Optimization(OptimizationBase):
             indpb=0.2,
         )
 
-        # Mutation for household appliance
-        self.toolbox.register("mutate_hour", tools.mutUniformInt, low=start_hour, up=23, indpb=0.2)
+        self.toolbox.register(
+            "mutate_hour",
+            tools.mutUniformInt,
+            low=start_hour,
+            up=max_appliance_start_hour,
+            indpb=0.2,
+        )
 
         # Custom mutate function remains unchanged
         self.toolbox.register("mutate", self.mutate)
