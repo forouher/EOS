@@ -58,6 +58,9 @@ class Genetic0HomeAppliance:
 
         :param start_hour: The hour at which the device should start.
         """
+        if start_hour < global_start_hour:
+            start_hour = global_start_hour
+
         if not self.start_allowed[start_hour]:
             # It is not allowed (by the time windows) to start the application at this time
             if global_start_hour <= self.start_latest:
